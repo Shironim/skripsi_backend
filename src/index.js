@@ -13,6 +13,8 @@ app.get('/', (req, res) => {
 });
 app.get('/user', userController.getAllUsers);
 app.get('/produk', userController.getAllProduk);
+app.get('/produk/:id', userController.getProductById);
+app.get('/register', userController.registerUser);
 // app.use('/tokplay', videoRouter);
 
 app.use((err, res) => {

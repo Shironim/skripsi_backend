@@ -10,6 +10,16 @@ const checkUser = (body) => {
 
   return connection.execute(SQLQuery);
 }
+const checkAdmin = (body) => {
+  const SQLQuery = `SELECT * FROM admin WHERE email = ${body.email} AND password = ${body.password}} LIMIT 1`;
+
+  return connection.execute(SQLQuery);
+}
+const registerUser = (nama_depan, nama_belakang, email, password, alamat, no_hp) => {
+  const SQLQuery = `INSERT INTO users (nama_depan, nama_belakang, email, password, alamat, no_hp) VALUES ("${nama_depan}", "${nama_belakang}", "${email}", "${password}", "${alamat}", "${no_hp}")`;
+
+  return connection.execute(SQLQuery);
+}
 const getAllProduct = () => {
   const SQLQuery = 'SELECT * FROM produk';
 
@@ -21,7 +31,7 @@ const getAllCart = (body) => {
   return connection.execute(SQLQuery);
 }
 const addToCart = (body) => {
-  const SQLQuery = `INSERT INTO keranjang_belanja (id_user, id_produk, jumlah) VALUES (${body.id_user}, ${body.id_produk}, ${body.jumlah})`;
+  const SQLQuery = `INSERT INTO keranjang_belanja (id_user, id_produk, jumlah) VALUES (, ${body.id_produk}, ${body.jumlah})`;
 
   return connection.execute(SQLQuery);
 }
@@ -41,8 +51,8 @@ const getCartById = () => {
 
   return connection.execute(SQLQuery);
 }
-const getProductById = (body) => {
-  const SQLQuery = `SELECT * FROM produk WHERE id_produk = ${body.id_produk}`;
+const getProductById = (id_produk) => {
+  const SQLQuery = `SELECT * FROM produk WHERE id_produk = ${id_produk} LIMIT 1`;
 
   return connection.execute(SQLQuery);
 }
@@ -76,5 +86,6 @@ export default {
   addToCart,
   updateCart,
   deleteCart,
-  checkUser
+  checkUser,
+  registerUser
 }
