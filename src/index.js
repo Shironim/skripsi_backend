@@ -3,6 +3,7 @@ import express from 'express';
 import dotenv from 'dotenv';
 import auth from './middleware/auth.js';
 import multer from './middleware/multer.js';
+import bodyParser from 'body-parser';
 const app = express();
 
 const PORT = process.env.PORT || 3000;
@@ -15,6 +16,9 @@ app.use((req, res, next) => {
   next();
   app.use(express.json());
 });
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+
 app.use(express.static('public'));
 app.get('/', (req, res) => {
   res.json({
