@@ -1,7 +1,7 @@
 import userController from './controllers/userController.js';
 import express from 'express';
 import dotenv from 'dotenv';
-import auth from './middleware/auth.js';
+import {verifyToken} from './middleware/auth.js';
 import multer from './middleware/multer.js';
 import bodyParser from 'body-parser';
 const app = express();
@@ -11,11 +11,13 @@ const PORT = process.env.PORT || 3000;
 dotenv.config();
 
 app.use((req, res, next) => {
-  res.header("Access-Control-Allow-Origin", "*"); // update to match the domain you will make the request from
-  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  res.header("Access-Control-Allow-Origin", "http://localhost:3000");
+  res.header("Access-Control-Allow-Credentials", "true");
+  res.header("Access-Control-Allow-Methods", "GET,HEAD,OPTIONS,POST,PUT, PATCH, DELETE");
+  res.header("Access-Control-Allow-Headers", "Authorization, Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers");
   next();
-  app.use(express.json());
 });
+app.use(express.json());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
@@ -30,14 +32,16 @@ app.get('/produk', userController.getAllProduk);
 app.get('/produk/:id', userController.getProductById);
 app.post('/register', userController.registerUser);
 app.post('/login', userController.loginUser);
+app.get('/user', verifyToken, userController.getUserById);
 
 // app.use('/user', auth)
-app.get('/getcart/:id', userController.getAllCart);
-app.post('/addcart', userController.saveToCart);
-app.post('/invoice/', userController.createInvoice);
-app.patch('/tanggalSewa/', userController.changeTanggalSewa);
-app.patch('/jumlahHariSewa/', userController.changeJumlahHari);
+app.get('/getcart', verifyToken, userController.getAllCart);
+app.post('/addcart', verifyToken, userController.saveToCart);
+app.patch('/updatecart', userController.changeJumlahHari);
+app.patch('/tanggalsewa', userController.changeTanggalSewa);
+// app.patch('/jumlahHariSewa/', userController.changeJumlahHari);
 app.delete('/cart/', userController.deleteCart);
+app.post('/invoice/', userController.createInvoice);
 
 app.post('/invoice/', userController.createInvoice);
 app.get('/invoice/', userController.selectInvoiceById);
@@ -47,8 +51,8 @@ app.get('/produk-invoice/', userController.getAllProdukByInvoice);
 app.post('/upload', multer.single('photo'), (req, res) => {
   res.status(200).send("Welcome 🙌 ");
 })
-app.get("/welcome", auth, (req, res) => {
-  console.log(req.user)
+app.get("/welcome", verifyToken, (req, res) => {
+  console.log('req.user index', req.user.id_user)
   res.status(200).send("Welcome 🙌 ");
 });
 app.use((err, res) => {

@@ -5,6 +5,11 @@ const getAllUsers = () => {
 
   return connection.execute(SQLQuery);
 }
+const getUserById = (id_user) => {
+  const SQLQuery = `SELECT nama_depan FROM users WHERE id_user = ${id_user}`;
+
+  return connection.execute(SQLQuery);
+}
 const checkUser = (email) => {
   const SQLQuery = `SELECT email, password, id_user, nama_depan FROM users WHERE email = '${email}' LIMIT 1`;
 
@@ -34,7 +39,7 @@ const getProductById = (id_produk) => {
 }
 
 const getAllCart = (user_id) => {
-  const SQLQuery = `SELECT cart.*, produk.* FROM keranjang_belanja AS cart 
+  const SQLQuery = `SELECT cart.*, produk.nama, produk.harga, produk.status, produk.thumbnail FROM keranjang_belanja AS cart 
                     JOIN produk ON cart.id_produk = produk.id_produk
                     WHERE cart.id_user = ${user_id}`;
 
@@ -46,7 +51,7 @@ const addToCart = (id_user, id_produk) => {
   return connection.execute(SQLQuery);
 }
 const updateTanggalSewaCart = (tanggal_sewa, id_cart) => {
-  const SQLQuery = `UPDATE keranjang_belanja SET tanggal_sewa = str_to_date('${tanggal_sewa}','%m-%d-%Y') WHERE id_cart = ${id_cart}`;
+  const SQLQuery = `UPDATE keranjang_belanja SET tanggal_sewa = str_to_date('${tanggal_sewa}','%Y-%m-%d') WHERE id_cart = ${id_cart}`;
 
   return connection.execute(SQLQuery);
 }
@@ -123,6 +128,7 @@ const deleteProductById = (body) => {
 
 export default {
   getAllUsers,
+  getUserById,
   getAllProduct,
   getProductById,
   updateProductById,

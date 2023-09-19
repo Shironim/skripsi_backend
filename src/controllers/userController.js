@@ -16,6 +16,21 @@ const getAllUsers = async (req, res) => {
     })
   }
 }
+const getUserById = async (req, res) => {
+  try {
+    const { id_user } = req.user;
+    const [data] = await UsersModel.getUserById(id_user);
+    res.json({
+      message: 'GET all users success',
+      data: data
+    })
+  } catch (error) {
+    res.status(500).json({
+      message: 'Server Error',
+      serverMessage: error,
+    })
+  }
+}
 const getAllProduk = async (req, res) => {
   try {
     const [data] = await UsersModel.getAllProduct();
@@ -33,7 +48,7 @@ const getAllProduk = async (req, res) => {
 
 const getProductById = async (req, res) => {
   try {
-    console.log(req.params.id)
+    // console.log(req.params.id)
     const [data] = await UsersModel.getProductById(req.params.id);
     res.json({
       message: 'GET Produk by id success',
@@ -49,8 +64,8 @@ const getProductById = async (req, res) => {
 
 const getAllCart = async (req, res) => {
   try {
-    console.log(req.params.id)
-    const [data] = await UsersModel.getAllCart(req.params.id);
+    const { id_user } = req.user;
+    const [data] = await UsersModel.getAllCart(id_user);
     res.json({
       message: 'GET All chart ',
       data: data
@@ -64,11 +79,11 @@ const getAllCart = async (req, res) => {
 }
 
 const saveToCart = async (req, res) => {
+  // console.log('test', req.user)
   try {
-    const { id_user, id_produk } = req.body;
+    const { id_produk } = req.body;
+    const { id_user } = req.user;
     const [data] = await UsersModel.addToCart(id_user, id_produk);
-    console.log('user', id_user)
-    console.log('produk', id_produk)
     res.json({
       message: 'Add to cart success',
       data: data
@@ -83,7 +98,7 @@ const saveToCart = async (req, res) => {
 const changeTanggalSewa = async (req, res) => {
   try {
     const { tanggal_sewa, id_cart } = req.body;
-    console.log(tanggal_sewa, id_cart)
+    // console.log(tanggal_sewa, id_cart)
     const [data] = await UsersModel.updateTanggalSewaCart(tanggal_sewa, id_cart);
     res.json({
       message: 'Update tanggal sewa success',
@@ -99,7 +114,6 @@ const changeTanggalSewa = async (req, res) => {
 const changeJumlahHari = async (req, res) => {
   try {
     const { jumlah_hari, id_cart } = req.body;
-    console.log(jumlah_hari, id_cart)
     const [data] = await UsersModel.updatJumlahHariCart(jumlah_hari, id_cart);
     res.json({
       message: 'Update tanggal sewa success',
@@ -148,7 +162,7 @@ const createInvoice = async (req, res) => {
 const addProduct = async (req, res) => {
   console.log(req.body)
   try {
-    const {nama, merk, harga, deskripsi, type_produk, status} = req.body;
+    const { nama, merk, harga, deskripsi, type_produk, status } = req.body;
     const [data] = await UsersModel.addProduct(nama, merk, harga, deskripsi, type_produk, status);
     res.json({
       message: 'ADD Product success',
@@ -207,8 +221,24 @@ const getAllInvoice = async (req, res) => {
     })
   }
 }
+const updatJumlahHariCart = async (req, res) => {
+  try {
+    const {jumlah_hari, id_cart} = req.body
+    const [data] = await UsersModel.updatJumlahHariCart(jumlah_hari, id_cart);
+    res.json({
+      message: 'GELL ALL Invoice',
+      data: data
+    })
+  } catch (error) {
+    res.status(500).json({
+      message: 'Server Error',
+      serverMessage: error,
+    })
+  }
+}
 
 const loginUser = async (req, res) => {
+  console.log('Login Called')
   try {
     const { email, password } = req.body;
 
@@ -216,17 +246,19 @@ const loginUser = async (req, res) => {
     // console.log('user : ', validUser)
     if (validUser && (await bcrypt.compare(password, validUser[0].password))) {
       // Create token
-      const token = jwt.sign(
-        { id_user: validUser[0].id_user, email },
-        process.env.TOKEN_KEY,
-        {}
-      );
+      const token = jwt.sign({ id_user: validUser[0].id_user, email },
+        process.env.TOKEN_KEY, {
+        expiresIn: "2h" //expired in 2 hour
+      });
+      // console.log('token : ', token)
       // save user token
       validUser.token = token;
       // console.log('user : ', validUser)
       // user
-      res.status(200).json(validUser);
-    }else{
+      res.status(200).json({
+        token: validUser.token
+      });
+    } else {
       res.status(400).send("Invalid Credentials");
     }
 
@@ -255,10 +287,10 @@ const registerUser = async (req, res) => {
     const [data] = await UsersModel.registerUser(nama_depan, nama_belakang, email, encryptedPassword, alamat, no_hp);
     // return new user
     res.status(201)
-        .json({
-          message: 'Register user success',
-          data: data
-        })
+      .json({
+        message: 'Register user success',
+        data: data
+      })
   } catch (error) {
     res.status(500).json({
       message: 'Server Error',
@@ -277,6 +309,7 @@ const validateEmail = (email) => {
 
 export default {
   getAllUsers,
+  getUserById,
   getAllProduk,
   getProductById,
   registerUser,
