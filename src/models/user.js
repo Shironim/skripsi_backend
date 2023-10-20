@@ -37,6 +37,24 @@ const getProductById = (id_produk) => {
 
   return connection.execute(SQLQuery);
 }
+const getProductFromRasa = (merk, kategori, seri) => {
+  const SQLQuery = `SELECT * FROM produk WHERE nama LIKE '%${merk} ${seri}%' AND type_produk = '${kategori}'`;
+
+  return connection.execute(SQLQuery);
+}
+const getSeveralProductFromRasa = (produk) => {
+  const SQLQuery = `SELECT * FROM produk WHERE id_produk IN (${produk})`;
+
+  return connection.execute(SQLQuery);
+}
+const createInvoice = (nama_user, email_user, tanggal_diambil, tanggal_dikembalikan, produk, totalHarga) => {
+  const SQLQuery = `INSERT INTO invoice 
+  (nama_penyewa, email_penyewa, produk, tanggal_sewa, tanggal_kembali, total_harga, status_sewa) 
+  VALUES ('${nama_user}', '${email_user}', JSON_ARRAY(${produk}), str_to_date('${tanggal_diambil}','%Y-%m-%d'),
+   str_to_date('${tanggal_dikembalikan}','%Y-%m-%d'), ${totalHarga}, 'belum_bayar')`;
+
+  return connection.execute(SQLQuery);
+}
 
 const getAllCart = (user_id) => {
   const SQLQuery = `SELECT cart.*, produk.nama, produk.harga, produk.status, produk.thumbnail FROM keranjang_belanja AS cart 
@@ -65,11 +83,7 @@ const deleteCart = (id_cart) => {
 
   return connection.execute(SQLQuery);
 }
-const createInvoice = (id_user, produk, tanggal_sewa, tanggal_kembali, total_harga, status_sewa) => {
-  const SQLQuery = `INSERT INTO invoice (id_user, produk, tanggal_sewa, tanggal_kembali, total_harga, status_sewa) VALUES (${id_user}, JSON_ARRAY(${produk}), str_to_date('${tanggal_sewa}','%Y-%m-%d'), str_to_date('${tanggal_kembali}','%Y-%m-%d'), ${total_harga}, '${status_sewa}')`;
 
-  return connection.execute(SQLQuery);
-}
 const addProduct = (nama, merk, harga, deskripsi, type_produk, status) => {
   const SQLQuery = `INSERT INTO produk (nama, merk, harga, deskripsi, type_produk, status) VALUES (
     "${nama}", 
@@ -145,5 +159,7 @@ export default {
   selectInvoiceById,
   getAllProdukByInvoice,
   getAllInvoice,
-  addProduct
+  addProduct,
+  getProductFromRasa,
+  getSeveralProductFromRasa
 }

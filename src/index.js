@@ -11,7 +11,7 @@ const PORT = process.env.PORT || 3000;
 dotenv.config();
 
 app.use((req, res, next) => {
-  res.header("Access-Control-Allow-Origin", "http://localhost:3000");
+  res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Credentials", "true");
   res.header("Access-Control-Allow-Methods", "GET,HEAD,OPTIONS,POST,PUT, PATCH, DELETE");
   res.header("Access-Control-Allow-Headers", "Authorization, Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers");
@@ -27,16 +27,27 @@ app.get('/', (req, res) => {
     message: 'API is running, you can use this API with /tokplay',
   });
 });
+
+// RASA ENDPOINT
+// GET Product Information by id -> when user click on product
+// app.get('/produk/:id', userController.getProductById);
+// GET Product Information by name and category -> return spesification product and availability today
+app.get('/produk/:merk/:seri/:kategori', userController.getProductFromRasa);
+// SEND INVOICE EMAIL
+app.post("/send-invoice", userController.postInvoiceFromRasa);
+
+
+
 // app.get('/user', userController.getAllUsers);
 app.get('/produk', userController.getAllProduk);
 app.get('/produk/:id', userController.getProductById);
 app.post('/register', userController.registerUser);
 app.post('/login', userController.loginUser);
-app.get('/user', verifyToken, userController.getUserById);
+app.get('/user', userController.getUserById);
 
 // app.use('/user', auth)
-app.get('/getcart', verifyToken, userController.getAllCart);
-app.post('/addcart', verifyToken, userController.saveToCart);
+app.get('/getcart', userController.getAllCart);
+app.post('/addcart', userController.saveToCart);
 app.patch('/updatecart', userController.changeJumlahHari);
 app.patch('/tanggalsewa', userController.changeTanggalSewa);
 // app.patch('/jumlahHariSewa/', userController.changeJumlahHari);
@@ -60,6 +71,9 @@ app.use((err, res) => {
     message: err.message
   })
 })
+
+
+
 
 app.listen(PORT, () => {
   console.log(`Server berhasil di running http://localhost:${PORT}`);
