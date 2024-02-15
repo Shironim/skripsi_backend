@@ -2,14 +2,10 @@ import multer from 'multer';
 
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        cb(null, 'public/images');
+        cb(null, 'public/');
     },
     filename: (req, file, cb) => {
-        const timestamp = new Date().getTime();
-        const originalname = file.originalname;
-        // const extension = path.extname(file.originalname);
-
-        cb(null, `${timestamp}-${originalname}`);
+        cb(null, `${file.originalname.toLocaleLowerCase().split(' ').join('-')}`);
     }
 });
 
