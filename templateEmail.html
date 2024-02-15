@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    body{
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 16px;
+      width: 80%;
+      margin: 0 auto;
+    }
+    .table {
+      border-collapse: collapse;
+    }
+    table{
+      width: 100%;
+    }
+    th{
+      padding: 12px;
+      text-transform: uppercase;
+    }
+    table, td {
+      padding: 8px 16px;
+    }
+    .text-center {
+      text-align: center;
+    }
+    td:not(:first-child) {
+      text-align: center;
+    }
+    tbody td:last-child, tfoot td:last-child, thead th:last-child {
+      text-align: end !important;
+    }
+    tr:first-child td{
+      padding-top: 20px;
+    }
+    tbody tr:last-child td{
+      padding-bottom: 20px;
+      border-bottom: 1px solid black;
+    }
+    .margin-0 {
+      margin: 0;
+    }
+    .padding-0 {
+      padding: 0;
+    }
+  </style>
+</head>
+<body>
+  <h1 style="font-size: 20px;">
+    Reminder Invoice #1350129
+  </h1>
+  <p>
+    Halo Dimas Seto, Terimakasih telah memilih ADMS sebagai tempat kepercayaan menyewa kamera area Kota Semarang, invoice order milikmu telah masuk. Dan berikut rincian yang kamu order sebelumnya :
+  </p>
+  <div style="padding-bottom: 12px;">
+    <p class="margin-0" style="padding-bottom: 6px;">Tanggal Invoice : 22 Desember 2023</p>
+    <p class="margin-0" style="padding-bottom: 6px;">Tanggal Pengambilan : 23 Desember 2023</p>
+    <p class="margin-0" style="padding-bottom: 6px;">Tanggal Pengembalian : 25 Desember 2023</p>
+  </div>
+ <table class="table">
+  <thead>
+    <tr style="background-color: #8ecae6; color: black; font-weight: bold; text-align:left">
+      <th style="width: 40%;">Keterangan</th>
+      <th style="width: 20%;" class="text-center">Harga</th>
+      <th style="width: 20%;" class="text-center">Jumlah</th>
+      <th style="width: 20%;" class="text-center">Lama Sewa</th>
+      <th style="width: 20%;" class="text-center">Total</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Indomie</td>
+      <td>3000</td>
+      <td>1</td>
+      <td>1 Hari</td>
+      <td>3000</td>
+    </tr>
+    <tr>
+      <td>Indomie</td>
+      <td>3000</td>
+      <td>1</td>
+      <td>1 Hari</td>
+      <td>3000</td>
+    </tr>
+    <tr>
+      <td>Indomie</td>
+      <td>3000</td>
+      <td>1</td>
+      <td>1 Hari</td>
+      <td>3000</td>
+    </tr>
+    <tr>
+      <td>Indomie</td>
+      <td>3000</td>
+      <td>1</td>
+      <td>1 Hari</td>
+      <td>3000</td>
+    </tr>
+  </tbody>
+  <tfoot>
+    <tr>
+      <td style="font-weight: bold;">TOTAL</td>
+      <td></td>
+      <td></td>
+      <td colspan="2" style="font-weight: bold; text-align: end; font-size: 20px;">Rp. 300.000</td>
+    </tr>
+  </tfoot>
+ </table>
+ <p style="font-style: italic;">
+  Pengambilan alat dapat dilakukan di kantor kami pada tanggal 20 Agustus 2020. Mohon untuk membawa KTP dan melakukan pembayaran sebelum pengambilan alat.
+ </p>
+
+ <div style="padding: 12px 8px 0;">
+  <p class="margin-0" style="padding-bottom: 6px; font-weight: bold; font-size: 24px;">Metode Pembayaran</p>
+  <p class="margin-0"  style="padding-bottom: 6px;">a.n Sukotjo</p>
+  <p class="margin-0" style="padding-bottom: 6px;">Bank Mandiri</p>
+  <p class="margin-0" style="padding-bottom: 6px;">No Rek. 1234567890</p>
+ </div>
+</body>
+</html>
