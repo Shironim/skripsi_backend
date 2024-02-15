@@ -3,6 +3,8 @@ import dotenv from "dotenv";
 import bodyParser from "body-parser";
 import middleware from "./middleware/handler.js";
 import routerAPI from "./api/index.js";
+import morgan from 'morgan';
+import cors from 'cors';
 
 const app = express();
 dotenv.config();
@@ -20,19 +22,14 @@ app.use((req, res, next) => {
   );
   next();
 });
-
+app.use(morgan('dev'));
+app.use(cors());
 app.use(express.json());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static("public"));
 
 app.use('/api', routerAPI);
-
-app.get("/", (req, res) => {
-  res.json({
-    message: "API is running",
-  });
-});
 
 app.use(middleware.notFound);
 app.use(middleware.errorHandler);
