@@ -10,7 +10,7 @@ import express from "express";
 
 const router = express.Router();
 
-app.get("/", (req, res) => {
+router.get("/", (req, res) => {
   res.json({
     message: "API is running",
   });
