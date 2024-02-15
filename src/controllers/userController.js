@@ -1,10 +1,11 @@
 import UsersModel from "../models/user.js";
+import produkModel from "../models/produk.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import sendMail from "../service/mailService.js";
 
 const getAllUsers = async (req, res) => {
   try {
+    console.log("getAllUser Called");
     const [data] = await UsersModel.getAllUsers();
     res.json({
       message: "GET all users success",
@@ -19,6 +20,7 @@ const getAllUsers = async (req, res) => {
 };
 const getUserById = async (req, res) => {
   try {
+    console.log("getUserById Called");
     const { id_user } = req.user;
     const [data] = await UsersModel.getUserById(id_user);
     res.json({
@@ -32,293 +34,15 @@ const getUserById = async (req, res) => {
     });
   }
 };
-const getAllProduk = async (req, res) => {
+
+const getSearchProduct = async (req, res) => {
   try {
-    const [data] = await UsersModel.getAllProduct();
+    console.log("getSearchProduct Called");
+    const [data] = await produkModel.getSearchProduct(req.params.search);
     res.json({
-      message: "GET all Produk success",
+      message: "GET Search Produk success",
       data: data,
     });
-  } catch (error) {
-    res.status(500).json({
-      message: "Server Error",
-      serverMessage: error,
-    });
-  }
-};
-
-const getProductById = async (req, res) => {
-  try {
-    // console.log(req.params.id)
-    const [data] = await UsersModel.getProductById(req.params.id);
-    res.json({
-      message: "GET Produk by id success",
-      data: data,
-    });
-  } catch (error) {
-    res.status(500).json({
-      message: "Server Error",
-      serverMessage: error,
-    });
-  }
-};
-const getProductFromRasa = async (req, res) => {
-  try {
-    const { merk, kategori, seri } = req.params;
-    // console.log(req.params.id)
-    const [data] = await UsersModel.getProductFromRasa(merk, kategori, seri);
-    res.json({
-      message: "GET Produk success",
-      data: data,
-    });
-  } catch (error) {
-    res.status(500).json({
-      message: "Server Error",
-      serverMessage: error,
-    });
-  }
-};
-const postInvoiceFromRasa = async (req, res) => {
-  const invoiceTable = () =>{
-    return `
-    <!DOCTYPE html>
-    <html>
-      <head>
-        <meta charset="utf-8" />
-        <title>Invoice ADMS Foto Video</title>
-    
-        <style>
-          .invoice-box {
-            max-width: 800px;
-            margin: auto;
-            padding: 30px;
-            border: 1px solid #eee;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
-            font-size: 16px;
-            line-height: 24px;
-            font-family: 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif;
-            color: #555;
-          }
-    
-          .invoice-box table {
-            width: 100%;
-            line-height: inherit;
-            text-align: left;
-          }
-    
-          .invoice-box table td {
-            padding: 5px;
-            vertical-align: top;
-          }
-    
-          .invoice-box table tr td:nth-child(2) {
-            text-align: right;
-          }
-    
-          .invoice-box table tr.top table td {
-            padding-bottom: 20px;
-          }
-    
-          .invoice-box table tr.top table td.title {
-            font-size: 45px;
-            line-height: 45px;
-            color: #333;
-          }
-    
-          .invoice-box table tr.information table td {
-            padding-bottom: 40px;
-          }
-    
-          .invoice-box table tr.heading td {
-            background: #eee;
-            border-bottom: 1px solid #ddd;
-            font-weight: bold;
-          }
-    
-          .invoice-box table tr.details td {
-            padding-bottom: 20px;
-          }
-    
-          .invoice-box table tr.item td {
-            border-bottom: 1px solid #eee;
-          }
-    
-          .invoice-box table tr.item.last td {
-            border-bottom: none;
-          }
-    
-          .invoice-box table tr.total td:nth-child(2) {
-            border-top: 2px solid #eee;
-            font-weight: bold;
-          }
-    
-          @media only screen and (max-width: 600px) {
-            .invoice-box table tr.top table td {
-              width: 100%;
-              display: block;
-              text-align: center;
-            }
-    
-            .invoice-box table tr.information table td {
-              width: 100%;
-              display: block;
-              text-align: center;
-            }
-          }
-    
-          /** RTL **/
-          .invoice-box.rtl {
-            direction: rtl;
-            font-family: Tahoma, 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif;
-          }
-    
-          .invoice-box.rtl table {
-            text-align: right;
-          }
-    
-          .invoice-box.rtl table tr td:nth-child(2) {
-            text-align: left;
-          }
-        </style>
-      </head>
-    
-      <body>
-        <div class="invoice-box">
-          <table cellpadding="0" cellspacing="0">
-            <tr class="top">
-              <td colspan="2">
-                <table>
-                  <tr>
-                    <td class="title">
-                      <img
-                        src="https://sparksuite.github.io/simple-html-invoice-template/images/logo.png"
-                        style="width: 100%; max-width: 300px"
-                      />
-                    </td>
-    
-                    <td>
-                      Invoice #: 123<br />
-                      Created: January 1, 2023<br />
-                      Due: February 1, 2023
-                    </td>
-                  </tr>
-                </table>
-              </td>
-            </tr>
-    
-            <tr class="information">
-              <td colspan="2">
-                <table>
-                  <tr>
-                    <td>
-                      Sparksuite, Inc.<br />
-                      12345 Sunny Road<br />
-                      Sunnyville, CA 12345
-                    </td>
-    
-                    <td>
-                      Acme Corp.<br />
-                      John Doe<br />
-                      john@example.com
-                    </td>
-                  </tr>
-                </table>
-              </td>
-            </tr>
-    
-            <tr class="heading">
-              <td>Payment Method</td>
-    
-              <td>Check #</td>
-            </tr>
-    
-            <tr class="details">
-              <td>Check</td>
-    
-              <td>1000</td>
-            </tr>
-    
-            <tr class="heading">
-              <td>Item</td>
-    
-              <td>Price</td>
-            </tr>
-    
-            <tr class="item">
-              <td>Website design</td>
-    
-              <td>$300.00</td>
-            </tr>
-    
-            <tr class="item">
-              <td>Hosting (3 months)</td>
-    
-              <td>$75.00</td>
-            </tr>
-    
-            <tr class="item last">
-              <td>Domain name (1 year)</td>
-    
-              <td>$10.00</td>
-            </tr>
-    
-            <tr class="total">
-              <td></td>
-    
-              <td>Total: $385.00</td>
-            </tr>
-          </table>
-        </div>
-      </body>
-    </html>
-    `
-  }
-  // TODO
-  // create invoice table
-  // Send Invoice to email user
-
-  const toDate = (inputDate) => {
-    const date = new Date(inputDate); // Mengonversi string tanggal ke objek Date
-    const year = date.getFullYear(); // Mendapatkan tahun
-    const month = String(date.getMonth() + 1).padStart(2, "0"); // Mendapatkan bulan (ditambah 1 karena bulan dimulai dari 0)
-    const day = String(date.getDate()).padStart(2, "0"); // Mendapatkan hari
-
-    return `${year}-${month}-${day}`;
-  };
-  try {
-    const {
-      nama_user,
-      email_user,
-      tanggal_diambil,
-      tanggal_dikembalikan,
-      produk,
-    } = req.body;
-    sendMail(
-      "Invoice ADMS Foto Video",
-      email_user,
-      invoiceTable
-    )
-    // const [listProduk] = await UsersModel.getSeveralProductFromRasa(produk);
-
-    // const totalHarga = listProduk.reduce((acc, curr) => {
-    //   return acc.harga + curr.harga;
-    // });
-    // const date_diambil = new Date();
-    // const date_dikembalikan = new Date();
-    // date_diambil.setDate(tanggal_diambil);
-    // date_dikembalikan.setDate(tanggal_dikembalikan);
-    // const [data] = await UsersModel.createInvoice(
-    //   nama_user,
-    //   email_user,
-    //   toDate(date_diambil),
-    //   toDate(date_dikembalikan),
-    //   produk,
-    //   totalHarga * 1000
-    // );
-    // res.json({
-    //   message: "Create Invoice success",
-    //   data: data,
-    // });
   } catch (error) {
     res.status(500).json({
       message: "Server Error",
@@ -329,6 +53,7 @@ const postInvoiceFromRasa = async (req, res) => {
 
 const getAllCart = async (req, res) => {
   try {
+    console.log("getAllCart Called");
     const { id_user } = req.user;
     const [data] = await UsersModel.getAllCart(id_user);
     res.json({
@@ -346,6 +71,7 @@ const getAllCart = async (req, res) => {
 const saveToCart = async (req, res) => {
   // console.log('test', req.user)
   try {
+    console.log("saveToCart Called");
     const { id_produk } = req.body;
     const { id_user } = req.user;
     const [data] = await UsersModel.addToCart(id_user, id_produk);
@@ -360,6 +86,7 @@ const saveToCart = async (req, res) => {
     });
   }
 };
+
 const changeTanggalSewa = async (req, res) => {
   try {
     const { tanggal_sewa, id_cart } = req.body;
@@ -379,6 +106,7 @@ const changeTanggalSewa = async (req, res) => {
     });
   }
 };
+
 const changeJumlahHari = async (req, res) => {
   try {
     const { jumlah_hari, id_cart } = req.body;
@@ -411,105 +139,6 @@ const deleteCart = async (req, res) => {
   }
 };
 
-const createInvoice = async (req, res) => {
-  console.log(req.body);
-  try {
-    const {
-      id_user,
-      produk,
-      tanggal_sewa,
-      tanggal_kembali,
-      total_harga,
-      status_sewa,
-    } = req.body;
-    const [data] = await UsersModel.createInvoice(
-      id_user,
-      produk,
-      tanggal_sewa,
-      tanggal_kembali,
-      total_harga,
-      status_sewa
-    );
-    res.json({
-      message: "Create Invoice success",
-      data: data,
-    });
-  } catch (error) {
-    res.status(500).json({
-      message: "Server Error",
-      serverMessage: error,
-    });
-  }
-};
-const addProduct = async (req, res) => {
-  console.log(req.body);
-  try {
-    const { nama, merk, harga, deskripsi, type_produk, status } = req.body;
-    const [data] = await UsersModel.addProduct(
-      nama,
-      merk,
-      harga,
-      deskripsi,
-      type_produk,
-      status
-    );
-    res.json({
-      message: "ADD Product success",
-      data: data,
-    });
-  } catch (error) {
-    res.status(500).json({
-      message: "Server Error",
-      serverMessage: error,
-    });
-  }
-};
-const selectInvoiceById = async (req, res) => {
-  try {
-    const { id_invoice } = req.body;
-    const [data] = await UsersModel.selectInvoiceById(id_invoice);
-    res.json({
-      message: "GET Invoice",
-      data: data,
-    });
-  } catch (error) {
-    res.status(500).json({
-      message: "Server Error",
-      serverMessage: error,
-    });
-  }
-};
-
-const getAllProdukByInvoice = async (req, res) => {
-  try {
-    const { produk } = req.body;
-    console.log(produk);
-    const [data] = await UsersModel.getAllProdukByInvoice(produk);
-    res.json({
-      message: "GELL ALL Produk by Invoice",
-      data: data,
-    });
-  } catch (error) {
-    res.status(500).json({
-      message: "Server Error",
-      serverMessage: error,
-    });
-  }
-};
-const getAllInvoice = async (req, res) => {
-  try {
-    const [data] = await UsersModel.getAllInvoice();
-    res.json({
-      message: "GELL ALL Invoice",
-      data: data,
-    });
-  } catch (error) {
-    res.status(500).json({
-      message: "Server Error",
-      serverMessage: error,
-    });
-  }
-};
 const updatJumlahHariCart = async (req, res) => {
   try {
     const { jumlah_hari, id_cart } = req.body;
@@ -608,20 +237,12 @@ const validateEmail = (email) => {
 export default {
   getAllUsers,
   getUserById,
-  getAllProduk,
-  getProductById,
   registerUser,
   saveToCart,
   getAllCart,
   changeTanggalSewa,
   changeJumlahHari,
   deleteCart,
-  createInvoice,
-  selectInvoiceById,
-  getAllProdukByInvoice,
   loginUser,
-  getAllInvoice,
-  addProduct,
-  getProductFromRasa,
-  postInvoiceFromRasa,
+  getSearchProduct,
 };
