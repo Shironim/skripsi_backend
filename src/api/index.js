@@ -9,13 +9,6 @@ import multer from "../middleware/multer.js";
 import express from "express";
 
 const router = express.Router();
-
-router.get("/", (req, res) => {
-  res.json({
-    message: "API is running",
-  });
-});
-
 router.get("/incomepermonth", adminController.getIncomePerMonth);
 
 router.get("/search/:search", userController.getSearchProduct);
