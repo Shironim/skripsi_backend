@@ -56,7 +56,6 @@ const updateInvoiceByKode = async (req, res) => {
 };
 
 const createInvoice = async (req, res) => {
-  console.log(req.body);
   console.log("createInvoice Called");
   try {
     const {
