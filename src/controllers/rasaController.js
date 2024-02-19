@@ -35,11 +35,18 @@ const getSeveralProduct = async (req, res) => {
   console.log(req.body);
   try {
     const { produk } = req.body;
-    const [data] = await rasaModel.getSeveralProduct(produk);
-    res.json({
-      message: "GET Produk success",
-      data: data,
-    });
+    if (produk?.length > 0) {
+      const [data] = await rasaModel.getSeveralProduct(produk);
+      res.json({
+        message: "GET Produk success",
+        data: data,
+      });
+    } else {
+      res.json({
+        message: "GET Produk success",
+        data: [],
+      });
+    }
   } catch (error) {
     console.log(error);
     res.status(500).json({
@@ -110,7 +117,9 @@ const postInvoiceFromRasa = async (req, res) => {
           <td style="text-align: center;">${item.harga}</td>
           <td style="text-align: center;">1</td>
           <td style="text-align: center;">${lamaSewa} Hari</td>
-          <td style="text-align: right; font-weight: bold;">${formatCurrencyIDR(item.harga * lamaSewa)}</td>
+          <td style="text-align: right; font-weight: bold;">${formatCurrencyIDR(
+            item.harga * lamaSewa
+          )}</td>
         </tr>
       `;
     });
@@ -194,7 +203,9 @@ const postInvoiceFromRasa = async (req, res) => {
             <td style="font-weight: bold;">TOTAL</td>
             <td></td>
             <td></td>
-            <td colspan="2" style="font-weight: bold; text-align: end; font-size: 20px;">${formatCurrencyIDR(totalHarga)}</td>
+            <td colspan="2" style="font-weight: bold; text-align: end; font-size: 20px;">${formatCurrencyIDR(
+              totalHarga
+            )}</td>
           </tr>
         </tfoot>
       </table>
@@ -203,7 +214,7 @@ const postInvoiceFromRasa = async (req, res) => {
       <div >
         <p style="font-style: italic;">
         *Note: Pengambilan alat dapat dilakukan di kantor kami pada tanggal ${toDate(
-          date_diambil
+          today
         )}. Mohon untuk membawa KTP dan melakukan pembayaran sebelum pengambilan alat.
         </p>
           <div style="padding: 12px 8px 0;">

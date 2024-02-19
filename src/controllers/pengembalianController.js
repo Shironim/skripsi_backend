@@ -1,4 +1,5 @@
 import pengembalianModel from "../models/pengembalian.js";
+import produkModel from "../models/produk.js";
 
 const updatePengembalianByKode = async (req, res) => {
   console.log("updateInvoiceByKode Called");
@@ -12,7 +13,7 @@ const updatePengembalianByKode = async (req, res) => {
     );
     if (status_pengembalian === "dikembalikan") {
       for (let index = 0; index < produk.length; index++) {
-        await UsersModel.updateStatusProduk("tersedia", produk[index]);
+        await produkModel.updateStatusProduk("tersedia", produk[index]);
       }
     }
     res.json({

@@ -35,13 +35,16 @@ const deleteInvoiceByKode = (kodeInvoice) => {
 };
 const updateInvoiceByKode = (kodeInvoice, status_sewa, bukti_pembayaran) => {
   let pembayaran = "";
+  let date = "";
   switch (status_sewa) {
     case "dp":
       pembayaran = "bukti_dp";
+      date = "tgl_bayar_dp";
       break;
 
     case "lunas":
       pembayaran = "bukti_pelunasan";
+      date = "tgl_pelunasan";
       break;
 
     default:
@@ -51,7 +54,8 @@ const updateInvoiceByKode = (kodeInvoice, status_sewa, bukti_pembayaran) => {
   const SQLQuery = `UPDATE invoice SET 
   status_sewa = '${status_sewa}', 
   updated_at = NOW(),
-  ${pembayaran} = '${bukti_pembayaran}' 
+  ${pembayaran} = '${bukti_pembayaran}' ,
+  ${date} = NOW() 
   WHERE kode_invoice = '${kodeInvoice}'`;
 
   return connection.execute(SQLQuery);
