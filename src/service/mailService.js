@@ -1,6 +1,6 @@
 import { Resend } from 'resend';
 
-const resend = new Resend('re_4DPNYMRW_HUnZb4C8Mqcfoq7pXjF9uVxZ');
+const resend = new Resend(`re_${process.env.RESEND_API_KEY}`);
 
 export default async function sendMail(subject, toEmail, otpHtml) {
   await resend.emails.send({
@@ -9,7 +9,7 @@ export default async function sendMail(subject, toEmail, otpHtml) {
     subject: subject,
     html: otpHtml,
     headers: {
-      'X-Entity-Ref-ID': '4DPNYMRW_HUnZb4C8Mqcfoq7pXjF9uVxZ',
+      'X-Entity-Ref-ID': `${process.env.RESEND_API_KEY}`,
     },
   });
 }
