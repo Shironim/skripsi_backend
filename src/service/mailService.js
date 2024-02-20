@@ -1,29 +1,15 @@
-import nodemailer from "nodemailer";
-//-----------------------------------------------------------------------------
-export default async function sendMail(subject, toEmail, otpHtml) {
-  var transporter = nodemailer.createTransport({
-    service: "gmail",
-    auth: {
-      user: process.env.NODEMAILER_EMAIL,
-      pass: process.env.NODEMAILER_PW,
-    },
-  });
+import { Resend } from 'resend';
 
-  var mailOptions = {
-    from: process.env.NODEMAILER_EMAIL,
-    to: toEmail,
+const resend = new Resend('re_4DPNYMRW_HUnZb4C8Mqcfoq7pXjF9uVxZ');
+
+export default async function sendMail(subject, toEmail, otpHtml) {
+  await resend.emails.send({
+    from: 'ADMS Foto Video <onboarding@resend.dev>',
+    to: [toEmail],
     subject: subject,
     html: otpHtml,
-  };
-
-  await new Promise((resolve, reject) => {
-    // send mail
-    transporter.sendMail(mailOptions, (err, response) => {
-      if (err) {
-        reject(err);
-      } else {
-        resolve(response);
-      }
-    });
+    headers: {
+      'X-Entity-Ref-ID': '4DPNYMRW_HUnZb4C8Mqcfoq7pXjF9uVxZ',
+    },
   });
 }
