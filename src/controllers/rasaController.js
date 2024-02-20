@@ -4,7 +4,11 @@ import pengembalianModel from "../models/pengembalian.js";
 import invoiceModel from "../models/invoice.js";
 import { useFormatCurrency } from "../utils/utils.js";
 import { Resend } from 'resend';
+
 const resend = new Resend(`re_${process.env.RESEND_API_KEY}`);
+
+export const runtime = 'edge';
+export const dynamic = 'force-dynamic';
 
 const { formatCurrencyIDR } = useFormatCurrency();
 
