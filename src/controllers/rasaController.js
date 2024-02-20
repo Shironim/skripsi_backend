@@ -2,8 +2,9 @@ import produkModel from "../models/produk.js";
 import rasaModel from "../models/rasa.js";
 import pengembalianModel from "../models/pengembalian.js";
 import invoiceModel from "../models/invoice.js";
-import sendMail from "../service/mailService.js";
 import { useFormatCurrency } from "../utils/utils.js";
+import { Resend } from 'resend';
+const resend = new Resend(`re_${process.env.RESEND_API_KEY}`);
 
 const { formatCurrencyIDR } = useFormatCurrency();
 
@@ -55,6 +56,18 @@ const getSeveralProduct = async (req, res) => {
     });
   }
 };
+
+const sendMail = async (subject, toEmail, otpHtml) => {
+  await resend.emails.send({
+    from: 'ADMS Foto Video <onboarding@resend.dev>',
+    to: [toEmail],
+    subject: subject,
+    html: otpHtml,
+    headers: {
+      'X-Entity-Ref-ID': `${process.env.RESEND_API_KEY}`,
+    },
+  });
+}
 
 const postInvoiceFromRasa = async (req, res) => {
   console.log(req.body);
