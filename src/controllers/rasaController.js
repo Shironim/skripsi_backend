@@ -3,12 +3,12 @@ import rasaModel from "../models/rasa.js";
 import pengembalianModel from "../models/pengembalian.js";
 import invoiceModel from "../models/invoice.js";
 import { useFormatCurrency } from "../utils/utils.js";
-import { Resend } from 'resend';
+import { Resend } from "resend";
 
 const resend = new Resend(`re_${process.env.RESEND_API_KEY}`);
 
-export const runtime = 'edge';
-export const dynamic = 'force-dynamic';
+export const runtime = "edge";
+export const dynamic = "force-dynamic";
 
 const { formatCurrencyIDR } = useFormatCurrency();
 
@@ -60,18 +60,6 @@ const getSeveralProduct = async (req, res) => {
     });
   }
 };
-
-const sendMail = async (subject, toEmail, otpHtml) => {
-  await resend.emails.send({
-    from: 'ADMS Foto Video <onboarding@resend.dev>',
-    to: [toEmail],
-    subject: subject,
-    html: otpHtml,
-    headers: {
-      'X-Entity-Ref-ID': `${process.env.RESEND_API_KEY}`,
-    },
-  });
-}
 
 const postInvoiceFromRasa = async (req, res) => {
   console.log(req.body);
@@ -257,12 +245,22 @@ const postInvoiceFromRasa = async (req, res) => {
       totalHarga,
       kode_invoice
     );
-    sendMail("Invoice ADMS Foto Video", email_user, template);
+
+    const sendEmail = await resend.emails.send({
+      from: "ADMS Foto Video <onboarding@resend.dev>",
+      to: [email_user],
+      subject: "Invoice ADMS Foto Video",
+      html: template,
+      headers: {
+        "X-Entity-Ref-ID": `${process.env.RESEND_API_KEY}`,
+      },
+    });
     res.json({
       message: "Create Invoice success",
       data: {
         data: data,
         pengembalian: pengembalian,
+        sendEmail: sendEmail,
       },
     });
   } catch (error) {
